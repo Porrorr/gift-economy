@@ -2,21 +2,25 @@ var rewire = require('rewire')
   , assert = require('assert')
 ;
 
-var routes;
+var routes,
+  controller
+;
 
 describe('Gifts routes', function() {
 
   beforeEach(function() {
     routes = rewire('../../routes/gifts');
+    controller = {};
+    routes.__set__('controller', controller);
   });
 
-  it('renders an example page', function(done) {
-    routes.__get__('get')({}, {
-      render: function(template, data) {
-        assert.strictEqual(template, 'gifts', 'Template name');
-        assert.notEqual(data, undefined, 'Template needs data to be passed to it');
-        done();
-      }
-    });
+  it('calls gifts controller', function(done) {
+    var req = {}, res = {};
+    controller.getHome = function(passedReq, passedRes) {
+      assert.equal(passedReq, req, 'Should pass request through');
+      assert.equal(passedRes, res, 'Should pass response through');
+      done();
+    };
+    routes.__get__('get')(req, res);
   })
 })
