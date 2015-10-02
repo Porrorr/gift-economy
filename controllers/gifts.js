@@ -12,6 +12,9 @@ var giftsController = {
         db.close();
       })
     });
+  },
+  getNew: function(req, res) {
+    res.render('new', {title: 'New gift creator'});
   }
 }
 

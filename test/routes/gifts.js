@@ -23,4 +23,14 @@ describe('Gifts routes', function() {
     };
     routes.__get__('get')(req, res);
   })
+
+  it('calls gifts controller new when hitting /new', function(done) {
+    var req = {}, res = {};
+    controller.getNew = function(passedReq, passedRes) {
+      assert.equal(passedReq, req, 'Should pass request through');
+      assert.equal(passedRes, res, 'Should pass response through');
+      done();
+    };
+    routes.__get__('getNew')(req, res);
+  })
 })

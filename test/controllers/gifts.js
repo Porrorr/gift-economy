@@ -40,4 +40,15 @@ describe('Gifts controller', function() {
       }
     });
   })
+
+  it('renders the new gift form in getNew', function(done) {
+    var res = {
+      render: function(template, data) {
+        assert.strictEqual(template, 'new', 'Template name must be correct');
+        assert.equal(data.title, 'New gift creator', 'Must set page title');
+        done();
+      }
+    };
+    controller.getNew({}, res);
+  })
 })
