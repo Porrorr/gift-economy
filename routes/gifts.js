@@ -3,13 +3,13 @@ var express = require('express')
 ;
 var router = express.Router();
 
-router.get('/', get);
-function get(req, res, next) {
+var get;
+router.get('/', get = function (req, res) {
   controller.getHome(req, res);
-}
-router.get('/new', getNew);
-function getNew(req, res, next) {
+});
+var getNew;
+router.get('/new', getNew = function (req, res) {
   controller.getNew(req, res);
-}
+});
 
 module.exports = router;

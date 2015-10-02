@@ -14,23 +14,21 @@ describe('Gifts routes', function() {
     routes.__set__('controller', controller);
   });
 
-  it('calls gifts controller', function(done) {
+  var testPassThrough = function(routerFunc, controllerFunc, done) {
     var req = {}, res = {};
-    controller.getHome = function(passedReq, passedRes) {
+    controller[controllerFunc] = function(passedReq, passedRes) {
       assert.equal(passedReq, req, 'Should pass request through');
       assert.equal(passedRes, res, 'Should pass response through');
       done();
     };
-    routes.__get__('get')(req, res);
+    routes.__get__(routerFunc)(req, res);
+  }
+
+  it('calls gifts controller', function(done) {
+    testPassThrough('get', 'getHome', done);
   })
 
   it('calls gifts controller new when hitting /new', function(done) {
-    var req = {}, res = {};
-    controller.getNew = function(passedReq, passedRes) {
-      assert.equal(passedReq, req, 'Should pass request through');
-      assert.equal(passedRes, res, 'Should pass response through');
-      done();
-    };
-    routes.__get__('getNew')(req, res);
+    testPassThrough('getNew', 'getNew', done);
   })
 })
