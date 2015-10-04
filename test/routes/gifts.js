@@ -31,4 +31,8 @@ describe('Gifts routes', function() {
   it('calls gifts controller new when hitting /new', function(done) {
     testPassThrough('getNew', 'getNew', done);
   })
+
+  it('passes through post to controller', function(done) {
+    testPassThrough('post', 'addNew', done);
+  })
 })

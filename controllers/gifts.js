@@ -1,9 +1,11 @@
 var mongoClient = require('mongodb').MongoClient
 ;
 
+var mongoUrl = 'mongodb://localhost:27017/gift-economy';
+
 var giftsController = {
   getHome: function(req, res) {
-    mongoClient.connect('mongodb://localhost:27017/gift-economy', function(err, db) {
+    mongoClient.connect(mongoUrl, function(err, db) {
       // TODO Error management
       var collection = db.collection('gifts');
       collection.find({}).toArray(function(err, gifts) {
@@ -15,6 +17,20 @@ var giftsController = {
   },
   getNew: function(req, res) {
     res.render('new', {title: 'New gift creator'});
+  },
+  addNew: function(req, res) {
+    mongoClient.connect(mongoUrl, function(err, db) {
+      //TODO Error management
+      db.collection('gifts').insertOne({
+        //TODO Make sure body-parser sanitises inputs
+        name: req.body.name,
+        description: req.body.description
+      }, function(err, result) {
+        //TODO check result
+        res.redirect('/gifts');
+        db.close();
+      });
+    })
   }
 }
 
