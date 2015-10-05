@@ -4,28 +4,28 @@ var mongoClient = require('mongodb').MongoClient
 var mongoUrl = 'mongodb://localhost:27017/gift-economy';
 
 var giftsController = {
-  getHome: function(req, res) {
-    mongoClient.connect(mongoUrl, function(err, db) {
+  getHome: (req, res) => {
+    mongoClient.connect(mongoUrl, (err, db) => {
       // TODO Error management
       var collection = db.collection('gifts');
-      collection.find({}).toArray(function(err, gifts) {
+      collection.find({}).toArray( (err, gifts) => {
         console.log(gifts);
         res.render('gifts', { title: 'Gifts', gift: gifts});
         db.close();
       })
     });
   },
-  getNew: function(req, res) {
+  getNew: (req, res) => {
     res.render('new', {title: 'New gift creator'});
   },
-  addNew: function(req, res) {
-    mongoClient.connect(mongoUrl, function(err, db) {
+  addNew: (req, res) => {
+    mongoClient.connect(mongoUrl, (err, db) => {
       //TODO Error management
       db.collection('gifts').insertOne({
         //TODO Make sure body-parser sanitises inputs
         name: req.body.name,
         description: req.body.description
-      }, function(err, result) {
+      }, (err, result) => {
         //TODO check result
         res.redirect('/gifts');
         db.close();

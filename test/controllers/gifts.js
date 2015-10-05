@@ -7,33 +7,33 @@ var controller
   , db
 ;
 
-describe('Gifts controller', function() {
+describe('Gifts controller', () => {
 
-  beforeEach(function() {
+  beforeEach( () => {
     controller = rewire('../../controllers/gifts');
     mongoClient = {};
     db = {};
     controller.__set__('mongoClient', mongoClient);
   });
 
-  it('renders a homepage with mongo data', function(done) {
+  it('renders a homepage with mongo data', done => {
     giftData = {};
-    db.collection = function(name) {
+    db.collection = name => {
         assert.equal(name, 'gifts');
         return {
-          find: function() {
+          find: () => {
             return {
-              toArray: function(callback) {
+              toArray: callback => {
                 callback({}, giftData)
               }
             }
           }
         };
       },
-    db.close = function() {}
-    mongoClient.connect = function(url, callback) {callback({}, db)};
+    db.close = () => {}
+    mongoClient.connect = (url, callback) => {callback({}, db)};
     controller.getHome({}, {
-      render: function(template, data) {
+      render: (template, data) => {
         assert.strictEqual(template, 'gifts', 'Template name');
         assert.equal(data.title, 'Gifts', 'Template must have title set correctly');
         assert.equal(data.gift, giftData, 'Must pass mongo data to the template');
@@ -42,9 +42,9 @@ describe('Gifts controller', function() {
     });
   })
 
-  it('renders the new gift form in getNew', function(done) {
+  it('renders the new gift form in getNew', done => {
     var res = {
-      render: function(template, data) {
+      render: (template, data) => {
         assert.strictEqual(template, 'new', 'Template name must be correct');
         assert.equal(data.title, 'New gift creator', 'Must set page title');
         done();
@@ -53,7 +53,7 @@ describe('Gifts controller', function() {
     controller.getNew({}, res);
   })
 
-  it('creates new gift in addNew', function(done) {
+  it('creates new gift in addNew', done => {
     // To be checked
     var collection, name, description, redirect;
 
@@ -64,24 +64,24 @@ describe('Gifts controller', function() {
       }
     };
     var res = {
-      redirect: function(url) {
+      redirect: url => {
         redirect = url;
       }
     };
-    db.collection = function(name) {
+    db.collection = name => {
       assert.equal(name, 'gifts');
       return {
-        insertOne: function(data, callback) {
+        insertOne: (data, callback) => {
           assert.equal(data.name, req.body.name, 'Name should be set');
           assert.equal(data.description, req.body.description, 'Description should be set');
           callback();
         }
       };
     };
-    db.close = function() {
+    db.close = () => {
       done();
     }
-    mongoClient.connect = function(url, callback) {callback({}, db)};
+    mongoClient.connect = (url, callback) => {callback({}, db)};
     controller.addNew(req, res);
 
     assert.equal(redirect, '/gifts', 'Redirect should send to gift list');

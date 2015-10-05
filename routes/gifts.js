@@ -9,15 +9,15 @@ var app = express()
 app.use(bodyParser.urlencoded({extended: false}));
 
 var get;
-router.get('/', get = function (req, res) {
+router.get('/', get = (req, res) => {
   controller.getHome(req, res);
 });
 var getNew;
-router.get('/new', getNew = function (req, res) {
+router.get('/new', getNew = (req, res) => {
   controller.getNew(req, res);
 });
 var post;
-router.post('/', post = function(req, res) {
+router.post('/', post = (req, res) => {
   controller.addNew(req, res);
 });
 
