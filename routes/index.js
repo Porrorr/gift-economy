@@ -5,5 +5,8 @@ var router = express.Router();
 router.get('/', (req, res, next) => {
   res.render('index', { title: 'Express' });
 });
+router.get('/logout', (req, res) => {
+  res.redirect('/login/logout');
+})
 
 module.exports = router;

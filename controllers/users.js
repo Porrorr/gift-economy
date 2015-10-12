@@ -4,6 +4,10 @@ var usersController = {
   },
   login(req, res) {
     res.redirect(req.session.returnTo || '/gifts');
+  },
+  logout(req, res) {
+    req.logout();
+    res.redirect('/');
   }
 }
 

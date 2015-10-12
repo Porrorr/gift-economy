@@ -13,5 +13,9 @@ var post;
 router.post('/', sessions.authenticate(), post = (req, res) => {
   controller.login(req, res);
 });
+var logout;
+router.get('/logout', logout = (req, res) => {
+  controller.logout(req, res);
+});
 
 module.exports = router;
