@@ -33,25 +33,33 @@ describe('Gifts controller', () => {
       },
     db.close = () => {}
     mongoClient.connect = (url, callback) => {callback({}, db)};
+
     controller.getHome({}, {
       render: (template, data) => {
-        assert.strictEqual(template, 'gifts', 'Template name');
-        assert.equal(data.title, 'Gifts', 'Template must have title set correctly');
-        assert.equal(data.gift, giftData, 'Must pass mongo data to the template');
+        asserts.template = template;
+        asserts.data = data;
         done();
       }
     });
+
+    assert.strictEqual(asserts.template, 'gifts', 'Template name');
+    assert.equal(asserts.data.title, 'Gifts', 'Template must have title set correctly');
+    assert.equal(asserts.data.gift, giftData, 'Must pass mongo data to the template');
   })
 
   it('renders the new gift form in getNew', done => {
     var res = {
       render: (template, data) => {
-        assert.strictEqual(template, 'new', 'Template name must be correct');
-        assert.equal(data.title, 'New gift creator', 'Must set page title');
+        asserts.template = template;
+        asserts.data = data;
         done();
       }
     };
+
     controller.getNew({}, res);
+
+    assert.strictEqual(asserts.template, 'new', 'Template name must be correct');
+    assert.equal(asserts.data.title, 'New gift creator', 'Must set page title');
   })
 
   it('creates new gift in addNew', done => {
@@ -74,10 +82,7 @@ describe('Gifts controller', () => {
       asserts.collection = col;
       return {
         insertOne: (data, callback) => {
-          asserts.name = data.name;
-          asserts.description = data.description;
-          asserts.gifterId = data.gifterId;
-          asserts.gifterName = data.gifterName;
+          asserts.data = data;
           callback();
         }
       };
@@ -90,11 +95,13 @@ describe('Gifts controller', () => {
     controller.addNew(req, res);
 
     assert.strictEqual(asserts.collection, 'gifts');
-    assert.strictEqual(asserts.name, req.body.name, 'Name should be set');
-    assert.strictEqual(asserts.description, req.body.description,
+    assert.strictEqual(asserts.data.name, req.body.name, 'Name should be set');
+    assert.strictEqual(asserts.data.description, req.body.description,
             'Description should be set');
-    assert(ObjectId(req.user._id).equals(asserts.gifterId), 'Should set gifter id');
-    assert.strictEqual(asserts.gifterName, req.user.username, 'Should set username');
+    assert(ObjectId(req.user._id).equals(asserts.data.gifterId),
+            'Should set gifter id');
+    assert.strictEqual(asserts.data.gifterName, req.user.username,
+            'Should set username');
     assert.strictEqual(asserts.redirect, '/gifts',
             'Redirect should send to gift list');
   })
