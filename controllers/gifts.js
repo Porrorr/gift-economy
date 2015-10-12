@@ -1,5 +1,5 @@
-var mongoClient = require('mongodb').MongoClient
-;
+var mongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId;
 
 var mongoUrl = 'mongodb://localhost:27017/gift-economy';
 
@@ -9,7 +9,6 @@ var giftsController = {
       // TODO Error management
       var collection = db.collection('gifts');
       collection.find({}).toArray( (err, gifts) => {
-        console.log(gifts);
         res.render('gifts', { title: 'Gifts', gift: gifts});
         db.close();
       })
@@ -25,7 +24,7 @@ var giftsController = {
         //TODO Make sure body-parser sanitises inputs
         name: req.body.name,
         description: req.body.description,
-        gifterId: req.user._id,
+        gifterId: ObjectId(req.user._id),
         gifterName: req.user.username
       }, (err, result) => {
         //TODO check result

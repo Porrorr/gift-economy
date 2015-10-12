@@ -1,5 +1,6 @@
 var assert = require('assert');
 var rewire = require('rewire');
+var ObjectId = require('mongodb').ObjectId;
 
 var controller;
 var mongoClient;
@@ -60,7 +61,7 @@ describe('Gifts controller', () => {
         description: 'desc'
       },
       user: {
-        _id: 'ididididididid',
+        _id: '5610f326ff3051d74f4f569c',
         username: 'user1'
       }
     };
@@ -92,7 +93,7 @@ describe('Gifts controller', () => {
     assert.strictEqual(asserts.name, req.body.name, 'Name should be set');
     assert.strictEqual(asserts.description, req.body.description,
             'Description should be set');
-    assert.strictEqual(asserts.gifterId, req.user._id, 'Should set gifter id');
+    assert(ObjectId(req.user._id).equals(asserts.gifterId), 'Should set gifter id');
     assert.strictEqual(asserts.gifterName, req.user.username, 'Should set username');
     assert.strictEqual(asserts.redirect, '/gifts',
             'Redirect should send to gift list');
