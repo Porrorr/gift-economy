@@ -14,6 +14,26 @@ var giftsController = {
       })
     });
   },
+  getOne(req, res, next) {
+    // TODO Extract store out to separate module and pool connection properly
+    if (!req.params.id || !ObjectId.isValid(req.params.id)) {
+      res.redirect('/gifts');
+    } else {
+      var id = ObjectId(req.params.id);
+      mongoClient.connect(mongoUrl, (err, db) => {
+        var collection = db.collection('gifts');
+        collection.findOne({ _id: id }, (err, gift) => {
+          if (err || !gift) {
+            var err = new Error('Not Found');
+            err.status = 404;
+            next(err);
+          } else {
+            res.render('giftDetail', {title: gift.name, gift: gift});
+          }
+        })
+      })
+    }
+  },
   getNew: (req, res) => {
     res.render('new', {title: 'New gift creator'});
   },

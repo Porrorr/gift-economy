@@ -18,5 +18,9 @@ var post;
 router.post('/', sessions.ensureLoggedIn(), post = (req, res) => {
   controller.addNew(req, res);
 });
+var getOne;
+router.get('/:id', getOne = (req, res, next) => {
+  controller.getOne(req, res, next);
+})
 
 module.exports = router;
