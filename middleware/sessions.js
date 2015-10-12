@@ -71,5 +71,12 @@ module.exports = {
     options.failureRedirect = options.failureRedirect || '/login';
     return passport.authenticate('local', options);
   },
-  ensureLoggedIn: options => ensureLogin.ensureLoggedIn(options)
+  ensureLoggedIn(options) {return ensureLogin.ensureLoggedIn(options)},
+  ensureLoggedOut(options) {return ensureLogin.ensureLoggedOut(options)},
+  newUser(data, options, callback) {
+    return store.insertOne({
+      username: data.username,
+      password: data.password
+    }, options, callback);
+  }
 }
