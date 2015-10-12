@@ -9,6 +9,7 @@ var sessions = require('./middleware/sessions');
 
 var routes = require('./routes/index');
 var gifts = require('./routes/gifts');
+var login = require('./routes/login');
 
 var app = express();
 
@@ -27,6 +28,7 @@ sessions.setMiddleware(app);
 
 app.use('/', routes);
 app.use('/gifts', gifts);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
