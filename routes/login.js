@@ -9,5 +9,9 @@ var get;
 router.get('/', get = (req, res) => {
   controller.getLogin(req, res);
 });
+var post;
+router.post('/', sessions.authenticate(), post = (req, res) => {
+  controller.login(req, res);
+});
 
 module.exports = router;
