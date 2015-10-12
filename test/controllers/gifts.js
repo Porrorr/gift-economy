@@ -1,15 +1,15 @@
-var assert = require('assert')
-  , rewire = require('rewire')
-;
+var assert = require('assert');
+var rewire = require('rewire');
 
-var controller
-  , mongoClient
-  , db
-;
+var controller;
+var mongoClient;
+var db;
+var asserts;
 
 describe('Gifts controller', () => {
 
   beforeEach( () => {
+    asserts = {};
     controller = rewire('../../controllers/gifts');
     mongoClient = {};
     db = {};
@@ -54,26 +54,29 @@ describe('Gifts controller', () => {
   })
 
   it('creates new gift in addNew', done => {
-    // To be checked
-    var collection, name, description, redirect;
-
     var req = {
       body: {
         name: 'name',
         description: 'desc'
+      },
+      user: {
+        _id: 'ididididididid',
+        username: 'user1'
       }
     };
     var res = {
       redirect: url => {
-        redirect = url;
+        asserts.redirect = url;
       }
     };
-    db.collection = name => {
-      assert.equal(name, 'gifts');
+    db.collection = col => {
+      asserts.collection = col;
       return {
         insertOne: (data, callback) => {
-          assert.equal(data.name, req.body.name, 'Name should be set');
-          assert.equal(data.description, req.body.description, 'Description should be set');
+          asserts.name = data.name;
+          asserts.description = data.description;
+          asserts.gifterId = data.gifterId;
+          asserts.gifterName = data.gifterName;
           callback();
         }
       };
@@ -82,8 +85,16 @@ describe('Gifts controller', () => {
       done();
     }
     mongoClient.connect = (url, callback) => {callback({}, db)};
+
     controller.addNew(req, res);
 
-    assert.equal(redirect, '/gifts', 'Redirect should send to gift list');
+    assert.strictEqual(asserts.collection, 'gifts');
+    assert.strictEqual(asserts.name, req.body.name, 'Name should be set');
+    assert.strictEqual(asserts.description, req.body.description,
+            'Description should be set');
+    assert.strictEqual(asserts.gifterId, req.user._id, 'Should set gifter id');
+    assert.strictEqual(asserts.gifterName, req.user.username, 'Should set username');
+    assert.strictEqual(asserts.redirect, '/gifts',
+            'Redirect should send to gift list');
   })
 })

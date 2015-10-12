@@ -24,7 +24,9 @@ var giftsController = {
       db.collection('gifts').insertOne({
         //TODO Make sure body-parser sanitises inputs
         name: req.body.name,
-        description: req.body.description
+        description: req.body.description,
+        gifterId: req.user._id,
+        gifterName: req.user.username
       }, (err, result) => {
         //TODO check result
         res.redirect('/gifts');
