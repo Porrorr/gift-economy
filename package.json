@@ -16,7 +16,11 @@
     "hbs": "~3.1.0",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
-    "mongodb": "~2.0.45"
+    "mongodb": "~2.0.45",
+    "client-sessions": "0.7.0",
+    "passport": "0.3.0",
+    "passport-local": "1.0.0",
+    "connect-ensure-login": "0.1.1"
   },
   "devDependencies": {
     "mocha": "~2.3.3",

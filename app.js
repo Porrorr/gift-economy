@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var sessions = require('./middleware/sessions');
+
 var routes = require('./routes/index');
 var gifts = require('./routes/gifts');
 
@@ -21,6 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+sessions.setMiddleware(app);
 
 app.use('/', routes);
 app.use('/gifts', gifts);
