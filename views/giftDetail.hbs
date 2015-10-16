@@ -2,3 +2,8 @@
 <h3>{{gift.gifterName}}</h3>
 <h4>Description</h4>
 <p>{{gift.description}}</p>
+{{#ifGifter}}
+  <button id="delete-gift">Delete</button>
+{{/ifGifter}}
+
+<script type="text/javascript" src="/javascript/gift-detail.js"></script>

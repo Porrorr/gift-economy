@@ -21,6 +21,10 @@ router.post('/', sessions.ensureLoggedIn(), post = (req, res) => {
 var getOne;
 router.get('/:id', getOne = (req, res, next) => {
   controller.getOne(req, res, next);
+});
+var del;
+router.delete('/:id', sessions.ensureLoggedIn(), del = (req, res) => {
+  controller.delete(req, res);
 })
 
 module.exports = router;

@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 
@@ -28,7 +30,37 @@ var giftsController = {
             err.status = 404;
             next(err);
           } else {
-            res.render('giftDetail', {title: gift.name, gift: gift});
+            let data = {
+              title: gift.name,
+              gift,
+            }
+            if (req.user) {
+              data.user = {
+                id: req.user._id,
+                username: req.user.username
+              }
+            }
+            res.render('giftDetail', data);
+          }
+        })
+      })
+    }
+  },
+  delete(req, res) {
+    if (!req.params.id || !ObjectId.isValid(req.params.id)) {
+      res.redirect('/gifts');
+    } else {
+      var id = new ObjectId(req.params.id);
+      mongoClient.connect(mongoUrl, (err, db) => {
+        var collection = db.collection('gifts');
+        collection.deleteOne({
+          _id: id,
+          gifterId: new ObjectId(req.user._id)
+        }, (err, gift) => {
+          // TODO Error management
+          if (gift) {
+            // TODO Change to modal
+            res.sendStatus(204);
           }
         })
       })
