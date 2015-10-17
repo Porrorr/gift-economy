@@ -1,21 +1,11 @@
+'use strict';
 var sessions = require('client-sessions');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-var mongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 var ensureLogin = require('connect-ensure-login');
 
-var store;
-
-var mongoUrl = 'mongodb://localhost:27017/gift-economy';
-
-mongoClient.connect(mongoUrl, (err, db) => {
-  if (err) {
-    throw new Error('Unable to connect to MongoDB, exiting\n' + err);
-  }
-  store = db.collection('users');
-  process.on('exit', () => db.close());
-});
+var store = require('../storage/mongo-store');
 
 // Configure the local strategy for use by Passport.
 //
@@ -25,7 +15,7 @@ mongoClient.connect(mongoUrl, (err, db) => {
 // will be set at `req.user` in route handlers after authentication.
 passport.use(new Strategy(
   function(username, password, cb) {
-    store.findOne({ username: username }, (err, user) => {
+    store.users.findOne({ username: username }, (err, user) => {
     // db.users.findByUsername(username, function(err, user) {
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
@@ -74,7 +64,7 @@ module.exports = {
   ensureLoggedIn(options) {return ensureLogin.ensureLoggedIn(options)},
   ensureLoggedOut(options) {return ensureLogin.ensureLoggedOut(options)},
   newUser(data, options, callback) {
-    return store.insertOne({
+    return store.users.insertOne({
       username: data.username,
       password: data.password
     }, options, callback);
