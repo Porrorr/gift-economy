@@ -1,10 +1,10 @@
+'use strict';
 var assert = require('assert');
 var rewire = require('rewire');
 var ObjectId = require('mongodb').ObjectId;
 
 var controller;
-var mongoClient;
-var db;
+var store;
 var asserts;
 
 describe('Gifts controller', () => {
@@ -12,27 +12,19 @@ describe('Gifts controller', () => {
   beforeEach( () => {
     asserts = {};
     controller = rewire('../../controllers/gifts');
-    mongoClient = {};
-    db = {};
-    controller.__set__('mongoClient', mongoClient);
+    store = { gifts: {} };
+    controller.__set__('store', store);
   });
 
   it('renders a homepage with mongo data', done => {
     giftData = {};
-    db.collection = name => {
-        assert.equal(name, 'gifts');
-        return {
-          find: () => {
-            return {
-              toArray: callback => {
-                callback({}, giftData)
-              }
-            }
-          }
-        };
-      },
-    db.close = () => {}
-    mongoClient.connect = (url, callback) => {callback({}, db)};
+    store.gifts.find = () => {
+      return {
+        toArray: callback => {
+          callback({}, giftData)
+        }
+      }
+    };
 
     controller.getHome({}, {
       render: (template, data) => {
@@ -76,25 +68,16 @@ describe('Gifts controller', () => {
     var res = {
       redirect: url => {
         asserts.redirect = url;
+        done();
       }
     };
-    db.collection = col => {
-      asserts.collection = col;
-      return {
-        insertOne: (data, callback) => {
-          asserts.data = data;
-          callback();
-        }
-      };
+    store.gifts.insertOne = (data, callback) => {
+      asserts.data = data;
+      callback();
     };
-    db.close = () => {
-      done();
-    }
-    mongoClient.connect = (url, callback) => {callback({}, db)};
 
     controller.addNew(req, res);
 
-    assert.strictEqual(asserts.collection, 'gifts');
     assert.strictEqual(asserts.data.name, req.body.name, 'Name should be set');
     assert.strictEqual(asserts.data.description, req.body.description,
             'Description should be set');
