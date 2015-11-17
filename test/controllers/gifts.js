@@ -17,7 +17,7 @@ describe('Gifts controller', () => {
   });
 
   it('renders a homepage with mongo data', done => {
-    giftData = {};
+    var giftData = {};
     store.gifts.find = () => {
       return {
         toArray: callback => {
