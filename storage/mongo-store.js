@@ -11,6 +11,8 @@ mongoClient.connect(mongoUrl, (err, db) => {
   }
   stores.users = db.collection('users');
   stores.gifts = db.collection('gifts');
+  // TODO check for collection and create with indexes if not there
+  stores.messages = db.collection('messages');
 
   process.on('exit', () => db.close());
 });
